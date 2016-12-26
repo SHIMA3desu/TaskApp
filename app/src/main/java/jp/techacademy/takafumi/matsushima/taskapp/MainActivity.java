@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
             task.setTitle(mTaskRealmResults.get(i).getTitle());
             task.setContents(mTaskRealmResults.get(i).getContents());
             task.setDate(mTaskRealmResults.get(i).getDate());
+            task.setCategory(mTaskRealmResults.get(i).getCategory());
             taskArrayList.add(task);
         }
 
