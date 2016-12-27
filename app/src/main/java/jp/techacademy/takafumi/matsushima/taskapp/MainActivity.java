@@ -32,8 +32,8 @@ import static android.R.attr.id;
 
 public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_TASK = "jp.techacademy.taro.kirameki.taskapp.TASK";
-    private Realm mRealm,mmRealm;
-    private RealmResults<Task> mTaskRealmResults,mmTaskRealmResults;
+    private Realm mRealm;
+    private RealmResults<Task> mTaskRealmResults;
     private RealmChangeListener mRealmListener = new RealmChangeListener() {
         @Override
         public void onChange(Object element) {
@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView mlistView;
     private TaskAdapter mtaskAdapter;
+    private String sw1 = "0";
+    private String selectWord ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,11 @@ public class MainActivity extends AppCompatActivity {
         });
         // Realmの設定
         mRealm = Realm.getDefaultInstance();
-        mTaskRealmResults = mRealm.where(Task.class).findAll();
+        if (sw1 == "0"){
+            mTaskRealmResults = mRealm.where(Task.class).findAll();
+        } else {
+            mTaskRealmResults = mRealm.where(Task.class).equalTo("category",selectWord).findAll();
+        }
         mTaskRealmResults.sort("date", Sort.DESCENDING);
         mRealm.addChangeListener(mRealmListener);
 
@@ -178,37 +184,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public   void BTsel01(View v){
-        Button button =(Button)findViewById(R.id.select_button);
+     //   Button button =(Button)findViewById(R.id.select_button);
         EditText editTextSel = (EditText)findViewById(R.id.categorysel_edit_text);
-        String  selectWord = (String)editTextSel.getText().toString();
-        Log.d("JAVATEST",selectWord);
+        selectWord = (String)editTextSel.getText().toString();
+        sw1 = "1";
+     //   Log.d("JAVATEST",selectWord);
         // Realmの設定
-        mmRealm = Realm.getDefaultInstance();
-        mmTaskRealmResults = mmRealm.where(Task.class).equalTo("category",selectWord).findAll();
-        mmTaskRealmResults.sort("date", Sort.DESCENDING);
-        mmRealm.addChangeListener(mRealmListener);
+        mRealm = Realm.getDefaultInstance();
+        mTaskRealmResults = mRealm.where(Task.class).equalTo("category",selectWord).findAll();
+        mTaskRealmResults.sort("date", Sort.DESCENDING);
+        mRealm.addChangeListener(mRealmListener);
 
-        ArrayList<Task> taskArrayList2 = new ArrayList<>();
-        for (int i = 0;i < mmTaskRealmResults.size(); i++){
-            if (!mmTaskRealmResults.get(i).isValid() ) continue;
-            Task task = new Task();
-            task.setId(mmTaskRealmResults.get(i).getId());
-            task.setTitle(mmTaskRealmResults.get(i).getTitle());
-            task.setContents(mmTaskRealmResults.get(i).getContents());
-            task.setDate(mmTaskRealmResults.get(i).getDate());
-            task.setCategory(mmTaskRealmResults.get(i).getCategory());
-            taskArrayList2.add(task);
-        }
-
-
-        mtaskAdapter.setTaskArrayList(taskArrayList2);
-        mlistView.setAdapter(mtaskAdapter);
-        mtaskAdapter.notifyDataSetChanged();
-
+        reloadListView();
     }
     public   void BTcle01(View v){
-        Button button =(Button)findViewById(R.id.clear_button);
+     //   Button button =(Button)findViewById(R.id.clear_button);
+        EditText editTextSel = (EditText)findViewById(R.id.categorysel_edit_text);
+        editTextSel.setText("");
+        sw1 = "0";
+        selectWord ="";
         Log.d("JAVATEST","BTcle01 PASS");
+        // Realmの設定
+        mRealm = Realm.getDefaultInstance();
+        mTaskRealmResults = mRealm.where(Task.class).findAll();
+        mTaskRealmResults.sort("date", Sort.DESCENDING);
+        mRealm.addChangeListener(mRealmListener);
 
+        reloadListView();
     }
 }
