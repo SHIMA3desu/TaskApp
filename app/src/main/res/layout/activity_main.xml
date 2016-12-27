@@ -6,11 +6,39 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="jp.techacademy.takafumi.matsushima.taskapp.MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/categorysel_edit_text"
+                android:hint="カテゴリ入力欄"/>
+            <Button
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/select_button"
+                android:onClick="BTsel01"
+                android:text="選択"/>
+            <Button
+                android:layout_height="wrap_content"
+                android:id="@+id/clear_button"
+                android:layout_width="60dp"
+                android:onClick="BTcle01"
+                android:text="ｸﾘｱ"/>
+
+        </LinearLayout>
 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

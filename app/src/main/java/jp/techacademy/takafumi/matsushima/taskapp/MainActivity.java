@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -30,8 +32,8 @@ import static android.R.attr.id;
 
 public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_TASK = "jp.techacademy.taro.kirameki.taskapp.TASK";
-    private Realm mRealm;
-    private RealmResults<Task> mTaskRealmResults;
+    private Realm mRealm,mmRealm;
+    private RealmResults<Task> mTaskRealmResults,mmTaskRealmResults;
     private RealmChangeListener mRealmListener = new RealmChangeListener() {
         @Override
         public void onChange(Object element) {
@@ -173,5 +175,40 @@ public class MainActivity extends AppCompatActivity {
         mRealm.beginTransaction();
         mRealm.copyToRealmOrUpdate(task);
         mRealm.commitTransaction();
+    }
+
+    public   void BTsel01(View v){
+        Button button =(Button)findViewById(R.id.select_button);
+        EditText editTextSel = (EditText)findViewById(R.id.categorysel_edit_text);
+        String  selectWord = (String)editTextSel.getText().toString();
+        Log.d("JAVATEST",selectWord);
+        // Realmの設定
+        mmRealm = Realm.getDefaultInstance();
+        mmTaskRealmResults = mmRealm.where(Task.class).equalTo("category",selectWord).findAll();
+        mmTaskRealmResults.sort("date", Sort.DESCENDING);
+        mmRealm.addChangeListener(mRealmListener);
+
+        ArrayList<Task> taskArrayList2 = new ArrayList<>();
+        for (int i = 0;i < mmTaskRealmResults.size(); i++){
+            if (!mmTaskRealmResults.get(i).isValid() ) continue;
+            Task task = new Task();
+            task.setId(mmTaskRealmResults.get(i).getId());
+            task.setTitle(mmTaskRealmResults.get(i).getTitle());
+            task.setContents(mmTaskRealmResults.get(i).getContents());
+            task.setDate(mmTaskRealmResults.get(i).getDate());
+            task.setCategory(mmTaskRealmResults.get(i).getCategory());
+            taskArrayList2.add(task);
+        }
+
+
+        mtaskAdapter.setTaskArrayList(taskArrayList2);
+        mlistView.setAdapter(mtaskAdapter);
+        mtaskAdapter.notifyDataSetChanged();
+
+    }
+    public   void BTcle01(View v){
+        Button button =(Button)findViewById(R.id.clear_button);
+        Log.d("JAVATEST","BTcle01 PASS");
+
     }
 }
